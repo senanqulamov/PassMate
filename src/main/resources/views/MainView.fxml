@@ -2,9 +2,38 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.passmate.controllers.MainController">
-    <children>
-        <Label text="Welcome to PassMate" layoutX="20" layoutY="20"/>
-    </children>
-</AnchorPane>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.passmate.controllers.MainController"
+            stylesheets="@/css/style.css"
+            prefWidth="900" prefHeight="650">
+
+    <!-- Custom Titlebar -->
+    <top>
+        <HBox fx:id="windowControls" alignment="TOP_RIGHT" spacing="10"
+              style="-fx-padding: 10 10 0 0;">
+            <Label fx:id="minimizeBtn" text="—" styleClass="minimize-btn"/>
+            <Label fx:id="closeBtn" text="✕" styleClass="close-btn"/>
+        </HBox>
+    </top>
+
+    <!-- Sidebar -->
+    <left>
+        <VBox fx:id="sidebar" spacing="8" styleClass="sidebar">
+            <padding>
+                <Insets top="25" left="15" bottom="25" right="15"/>
+            </padding>
+        </VBox>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <StackPane fx:id="contentArea" >
+            <VBox alignment="CENTER" spacing="0" >
+                <Label text="Welcome to PassMate!" styleClass="welcome-label"/>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

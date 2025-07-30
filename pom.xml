@@ -11,6 +11,8 @@
     <properties>
         <java.version>17</java.version>
         <javafx.version>21.0.1</javafx.version>
+        <ikonli.version>12.3.1</ikonli.version> <!-- Updated version -->
+        <javafx.plugin.version>0.0.8</javafx.plugin.version> <!-- Added plugin version -->
     </properties>
 
     <dependencies>
@@ -26,7 +28,19 @@
             <version>${javafx.version}</version>
         </dependency>
 
-        <!-- Optional: JSON processing (for vault saving/loading) -->
+        <!-- Ikonli FontAwesome -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-javafx</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId> <!-- Changed artifactId -->
+            <version>${ikonli.version}</version>
+        </dependency>
+
+        <!-- JSON processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -34,9 +48,17 @@
         </dependency>
     </dependencies>
 
+    <repositories>
+        <!-- Maven Central Repository -->
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+
     <build>
         <plugins>
-            <!-- Compiler Plugin -->
+            <!-- Maven Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -47,11 +69,11 @@
                 </configuration>
             </plugin>
 
-            <!-- JavaFX Run Plugin -->
+            <!-- JavaFX Maven Plugin -->
             <plugin>
                 <groupId>org.openjfx</groupId>
                 <artifactId>javafx-maven-plugin</artifactId>
-                <version>${javafx.version}</version>
+                <version>${javafx.plugin.version}</version> <!-- Updated version -->
                 <configuration>
                     <mainClass>com.passmate.App</mainClass>
                 </configuration>
