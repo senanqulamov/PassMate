@@ -25,6 +25,17 @@
             <padding>
                 <Insets top="25" left="15" bottom="25" right="15"/>
             </padding>
+            <!-- Add Category Row -->
+            <HBox spacing="8">
+                <TextField fx:id="categoryInput" promptText="New folder" />
+                <Button fx:id="addCategoryBtn" text="+" styleClass="icon-btn" />
+            </HBox>
+            <!-- Folder list -->
+            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="sidebar-scroll">
+                <content>
+                    <VBox fx:id="folderList" spacing="8" />
+                </content>
+            </ScrollPane>
         </VBox>
     </left>
 

@@ -121,3 +121,63 @@
 .icon-btn:hover FontIcon {
     -fx-icon-color: #2563eb;
 }
+
+/* Input error state */
+.text-field.error {
+    -fx-border-color: #ef4444;
+    -fx-border-width: 1;
+    -fx-background-color: #fff5f5;
+}
+
+/* Sidebar ScrollPane tweaks */
+.sidebar-scroll {
+    -fx-background-color: transparent;
+}
+.sidebar-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.welcome-label {
+    -fx-font-size: 20px;
+    -fx-text-fill: #2d3748;
+    -fx-font-weight: semibold;
+}
+
+.section-title {
+    -fx-font-size: 16px;
+    -fx-text-fill: #1f2937;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 8 0;
+}
+
+/* Toasts - shadcn-like */
+.toast {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 16, 0.22, 0, 4);
+    -fx-border-color: #e5e7eb;
+    -fx-border-width: 1;
+    -fx-border-radius: 12;
+    -fx-max-width: 200;
+    -fx-min-width: 100;
+    -fx-max-height: 90;
+    -fx-min-height: 40;
+}
+.toast-text {
+    -fx-text-fill: #111827;
+    -fx-font-size: 13px;
+}
+
+.toast-success {
+    -fx-background-color: rgba(181, 232, 146, 0.76);
+    -fx-border-color: #e5e7eb #e5e7eb #e5e7eb #10b981;
+}
+.toast-error {
+    -fx-background-color: rgba(232, 146, 146, 0.76);
+    -fx-border-color: #e5e7eb #e5e7eb #e5e7eb #ef4444;
+}
+.toast-info {
+    -fx-background-color: rgba(146, 232, 232, 0.76);
+    -fx-border-color: #e5e7eb #e5e7eb #e5e7eb #3b82f6;
+}

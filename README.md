@@ -43,8 +43,8 @@
 | **Phase** | **Feature**                      | **Status**       |
 |-----------|----------------------------------|------------------|
 | **P0**    | Project setup (Maven, JavaFX)    | ✅ Completed      |
-| **P1**    | Vault + Category structure       | 🔄 In Progress    |
-| **P2**    | Password model + AES encryption  | ⏳ Upcoming       |
+| **P1**    | Vault + Category structure       | ✅ Completed     |
+| **P2**    | Password model + AES encryption  | 🔄 In Progress    |
 | **P3**    | Microsoft-style JavaFX UI        | ⏳ Upcoming       |
 | **P4**    | CRUD operations for passwords    | ⏳ Upcoming       |
 | **P5**    | Clipboard copy / view features   | ⏳ Upcoming       |

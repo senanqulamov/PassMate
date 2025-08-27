@@ -1,6 +1,9 @@
 package com.passmate;
 
 import com.passmate.controllers.MainController;
+import com.passmate.services.VaultService;
+import com.passmate.services.impl.VaultServiceImpl;
+import com.passmate.services.repo.FileVaultRepository;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,6 +22,10 @@ public class App extends Application {
 
         MainController controller = fxmlLoader.getController();
         controller.makeWindowDraggable(scene, stage);
+
+        // Inject services with persistence
+        VaultService vaultService = new VaultServiceImpl(new FileVaultRepository());
+        controller.initData(vaultService);
 
         stage.setTitle("PassMate");
         stage.setScene(scene);
