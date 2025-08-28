@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.passmate.controllers.components.VaultController"
+      spacing="12" styleClass="vault-root">
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="titleLabel" styleClass="text-title-xl" text="Vault" />
+        <Region HBox.hgrow="ALWAYS" />
+        <Button fx:id="addBtn" text="Add Password" styleClass="btn-primary" />
+    </HBox>
+
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="vault-scroll">
+        <content>
+            <FlowPane fx:id="grid" styleClass="vault-grid" vgap="16" hgap="16" prefWrapLength="820" />
+        </content>
+    </ScrollPane>
+</VBox>

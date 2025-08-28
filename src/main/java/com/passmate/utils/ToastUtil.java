@@ -3,12 +3,12 @@ package com.passmate.utils;
 import javafx.animation.FadeTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 
@@ -26,56 +26,62 @@ public final class ToastUtil {
      */
     public static void show(StackPane parent, String message, Type type) {
         if (parent == null) return;
-        HBox toast = buildToastNode(message, type);
-        StackPane.setAlignment(toast, Pos.TOP_RIGHT);
+        HBox toast = loadToast(message, type);
+        StackPane.setAlignment(toast, Pos.BOTTOM_LEFT);
         int existing = (int) parent.getChildren().stream()
                 .filter(n -> n.getStyleClass().contains("toast"))
                 .count();
-        double offset = 16 + existing * 68; // approximate height + spacing
-        StackPane.setMargin(toast, new Insets(offset, 16, 16, 16));
+        double offset = 12 + existing * 56;
+        StackPane.setMargin(toast, new Insets(12, 12, offset, 12));
         parent.getChildren().add(toast);
 
-        // Animations: slide-in + fade-in, wait, fade-out + slide-up
-        TranslateTransition slideIn = new TranslateTransition(Duration.millis(140), toast);
-        slideIn.setFromY(-10);
+        // Animations
+        TranslateTransition slideIn = new TranslateTransition(Duration.millis(120), toast);
+        slideIn.setFromY(-8);
         slideIn.setToY(0);
-        FadeTransition fadeIn = new FadeTransition(Duration.millis(140), toast);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(120), toast);
         fadeIn.setFromValue(0);
         fadeIn.setToValue(1);
 
-        FadeTransition stay = new FadeTransition(Duration.millis(2000), toast);
+        FadeTransition stay = new FadeTransition(Duration.millis(1800), toast);
         stay.setFromValue(1);
         stay.setToValue(1);
 
-        FadeTransition fadeOut = new FadeTransition(Duration.millis(200), toast);
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(160), toast);
         fadeOut.setFromValue(1);
         fadeOut.setToValue(0);
 
-        TranslateTransition slideUp = new TranslateTransition(Duration.millis(200), toast);
+        TranslateTransition slideUp = new TranslateTransition(Duration.millis(160), toast);
         slideUp.setFromY(0);
-        slideUp.setToY(-10);
+        slideUp.setToY(-8);
 
         SequentialTransition seq = new SequentialTransition(slideIn, fadeIn, stay, fadeOut, slideUp);
         seq.setOnFinished(e -> parent.getChildren().remove(toast));
         seq.play();
     }
 
-    private static HBox buildToastNode(String message, Type type) {
-        Label label = new Label(message);
-        label.getStyleClass().add("toast-text");
-        label.setWrapText(true);
-        label.setMaxWidth(320);
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        HBox box = new HBox(12, label);
-        box.setPadding(new Insets(10, 14, 10, 14));
-        box.setOpacity(0);
-        box.getStyleClass().add("toast");
-        switch (type) {
-            case SUCCESS -> box.getStyleClass().add("toast-success");
-            case ERROR -> box.getStyleClass().add("toast-error");
-            case INFO -> box.getStyleClass().add("toast-info");
+    private static HBox loadToast(String message, Type type) {
+        try {
+            FXMLLoader loader = new FXMLLoader(ToastUtil.class.getResource("/views/components/Toast.fxml"));
+            HBox root = loader.load();
+            Label msg = (Label) root.lookup("#message");
+            if (msg != null) msg.setText(message);
+            switch (type) {
+                case SUCCESS -> root.getStyleClass().add("toast-success");
+                case ERROR -> root.getStyleClass().add("toast-error");
+                case INFO -> root.getStyleClass().add("toast-info");
+            }
+            root.setOpacity(0);
+            return root;
+        } catch (Exception e) {
+            // Fallback simple toast if FXML fails
+            HBox box = new HBox();
+            box.getStyleClass().add("toast");
+            Label lbl = new Label(message);
+            lbl.getStyleClass().add("toast-text");
+            box.getChildren().add(lbl);
+            box.setOpacity(0);
+            return box;
         }
-        return box;
     }
 }

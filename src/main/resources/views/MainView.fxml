@@ -3,48 +3,26 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+<StackPane xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.passmate.controllers.MainController"
             stylesheets="@/css/style.css"
-            prefWidth="900" prefHeight="650">
+            prefWidth="1000" prefHeight="680">
+    <HBox spacing="12" styleClass="main-root">
+        <padding>
+            <Insets top="12" right="12" bottom="12" left="12"/>
+        </padding>
 
-    <!-- Custom Titlebar -->
-    <top>
-        <HBox fx:id="windowControls" alignment="TOP_RIGHT" spacing="10"
-              style="-fx-padding: 10 10 0 0;">
-            <Label fx:id="minimizeBtn" text="—" styleClass="minimize-btn"/>
-            <Label fx:id="closeBtn" text="✕" styleClass="close-btn"/>
-        </HBox>
-    </top>
+        <!-- Left Sidebar -->
+        <fx:include fx:id="sidebar" source="/views/components/Sidebar.fxml" />
 
-    <!-- Sidebar -->
-    <left>
-        <VBox fx:id="sidebar" spacing="8" styleClass="sidebar">
-            <padding>
-                <Insets top="25" left="15" bottom="25" right="15"/>
-            </padding>
-            <!-- Add Category Row -->
-            <HBox spacing="8">
-                <TextField fx:id="categoryInput" promptText="New folder" />
-                <Button fx:id="addCategoryBtn" text="+" styleClass="icon-btn" />
-            </HBox>
-            <!-- Folder list -->
-            <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="sidebar-scroll">
-                <content>
-                    <VBox fx:id="folderList" spacing="8" />
-                </content>
-            </ScrollPane>
-        </VBox>
-    </left>
+        <!-- Middle List -->
+        <fx:include fx:id="passwordList" source="/views/components/PasswordList.fxml" />
 
-    <!-- Main Content -->
-    <center>
-        <StackPane fx:id="contentArea" >
-            <VBox alignment="CENTER" spacing="0" >
-                <Label text="Welcome to PassMate!" styleClass="welcome-label"/>
-            </VBox>
+        <!-- Right Detail / Editor (stacked) -->
+        <StackPane fx:id="rightStack" HBox.hgrow="ALWAYS">
+            <fx:include fx:id="passwordDetail" source="/views/components/PasswordDetail.fxml" />
+            <fx:include fx:id="passwordEditor" source="/views/components/PasswordEditor.fxml" />
         </StackPane>
-    </center>
-</BorderPane>
+    </HBox>
+</StackPane>

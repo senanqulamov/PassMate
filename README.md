@@ -44,10 +44,10 @@
 |-----------|----------------------------------|------------------|
 | **P0**    | Project setup (Maven, JavaFX)    | ✅ Completed      |
 | **P1**    | Vault + Category structure       | ✅ Completed     |
-| **P2**    | Password model + AES encryption  | 🔄 In Progress    |
-| **P3**    | Microsoft-style JavaFX UI        | ⏳ Upcoming       |
-| **P4**    | CRUD operations for passwords    | ⏳ Upcoming       |
-| **P5**    | Clipboard copy / view features   | ⏳ Upcoming       |
+| **P2**    | Password model + AES encryption  | ✅ Completed    |
+| **P3**    | Microsoft-style JavaFX UI        | ✅ Completed       |
+| **P4**    | CRUD operations for passwords    | ✅ Completed       |
+| **P5**    | Clipboard copy / view features   | 🔄 In Progress       |
 | **P6**    | Autofill & "Apply" functionality | ⏳ Upcoming       |
 | **P7**    | Token / QR sharing logic         | ⏳ Upcoming       |
 | **P8**    | Custom domain decoder API        | 🔮 Future         |

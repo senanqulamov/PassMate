@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.passmate.controllers.components.CategorySliderController"
+      spacing="8" styleClass="category-slider-root">
+    <padding>
+        <Insets top="8" right="12" bottom="8" left="12"/>
+    </padding>
+    <ScrollPane hbarPolicy="AS_NEEDED" vbarPolicy="NEVER" fitToHeight="true" fitToWidth="true" styleClass="category-scroll">
+        <content>
+            <HBox fx:id="container" spacing="8" />
+        </content>
+    </ScrollPane>
+</HBox>
+

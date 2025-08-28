@@ -1,15 +1,17 @@
 package com.passmate.services;
 
 import com.passmate.models.Category;
+import com.passmate.models.Password;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Business logic for managing the Vault's categories.
+ * Business logic for managing the Vault's categories and password groups.
  */
 public interface VaultService {
+    // Category operations
     /**
      * @return all categories ordered by name ascending.
      */
@@ -53,4 +55,17 @@ public interface VaultService {
      * @return category if present
      */
     Optional<Category> findById(UUID id);
+
+    // Password operations
+    /** Add password to vault and persist. */
+    void addPassword(Password password);
+    /** Delete password by id and persist. */
+    void deletePassword(UUID id);
+    /** List passwords for a category. */
+    List<Password> getPasswordsByCategory(UUID categoryId);
+
+    /** Find a password by id. */
+    Optional<Password> findPasswordById(UUID id);
+    /** Update a password entry and persist. */
+    void updatePassword(Password updated);
 }

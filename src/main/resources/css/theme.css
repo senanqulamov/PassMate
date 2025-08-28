@@ -1,0 +1,78 @@
+/* Central design tokens: monochrome theme */
+.root,
+.theme-light,
+.theme-dark {
+    -bg-color: #0a0a0a;
+    -color-bg-window: #0a0a0a;
+    -color-bg-gradient-top: #0d0d0d;
+
+    /* Monochrome accent equals white */
+    -accent-primary: #FFFFFF;
+    -accent-primary-hover: #EDEDED;
+    -accent-primary-active: #DADADA;
+    -accent-muted-bg: rgba(255,255,255,0.10);
+    -accent-glow: rgba(255,255,255,0.35);
+
+    -accent-secondary: #0e0e0e;
+
+    -text-primary: #FFFFFF;
+    -text-secondary: #FFFFFF; /* no other colors */
+    -text-inverse: #0a0a0a;
+
+    -color-stroke-soft: rgba(255,255,255,0.14); /* slim gray borders */
+
+    -color-surface-1: #0c0c0c;
+    -color-surface-2: #0d0d0d;
+    -color-surface-3: #0f0f0f;
+
+    /* Neutralize status colors */
+    -color-danger: rgba(255,255,255,0.35);
+    -color-danger-hover: rgba(255,255,255,0.45);
+    -color-danger-active: rgba(255,255,255,0.55);
+    -color-success: rgba(255,255,255,0.35);
+    -color-info: rgba(255,255,255,0.35);
+
+    /* Typography and scales unchanged */
+    -fx-font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    -font-size-xs: 11px;
+    -font-size-sm: 13px;
+    -font-size-md: 14px;
+    -font-size-lg: 16px;
+    -font-size-xl: 20px;
+
+    -font-weight-regular: 400;
+    -font-weight-medium: 500;
+    -font-weight-semibold: 600;
+    -font-weight-bold: 700;
+
+    -space-2: 2px; -space-4: 4px; -space-6: 6px; -space-8: 8px; -space-10: 10px; -space-12: 12px; -space-14: 14px; -space-16: 16px; -space-18: 18px; -space-20: 20px; -space-24: 24px;
+    -height-list-item: 56px;
+
+    -radius-xs: 3px; -radius-sm: 5px; -radius-md: 8px; -radius-lg: 12px; -radius-xl: 18px; -radius-pill: 999px;
+
+    -sidebar-width: 260px; -icon-size: 18; -topbar-height: 56px;
+
+    -color-bg: -bg-color; -color-bg-elev: -color-surface-1; -color-sidebar: -accent-secondary;
+    -color-text: -text-primary; -color-text-muted: -text-secondary; -color-border: -color-stroke-soft; -color-primary: -accent-primary; -color-primary-600: -accent-primary; -color-primary-700: -accent-primary;
+}
+
+/* Elevation helpers */
+.elev-1 { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.45), 24, 0.35, 0, 6); }
+.elev-2 { -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.55), 32, 0.36, 0, 10); }
+
+/* Card base */
+.card {
+    -fx-background-color: -color-surface-1;
+    -fx-background-radius: -radius-lg;
+    -fx-border-color: -color-stroke-soft;
+    -fx-border-width: 1;
+    -fx-border-radius: -radius-lg;
+}
+
+/* Typography scale */
+.text-title-xl { -fx-font-size: 20px; -fx-font-weight: 700; -fx-text-fill: -text-primary; }
+.text-title-md { -fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: -text-primary; }
+.text-subtle { -fx-font-size: 12px; -fx-text-fill: -text-secondary; }
+
+/* Utility */
+.mono { -fx-font-family: Consolas, "SF Mono", Menlo, monospace; }

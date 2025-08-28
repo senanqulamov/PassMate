@@ -1,6 +1,7 @@
 package com.passmate.services.impl;
 
 import com.passmate.models.Category;
+import com.passmate.models.Password;
 import com.passmate.models.Vault;
 import com.passmate.services.VaultService;
 import com.passmate.services.exceptions.CategoryNotFoundException;
@@ -103,5 +104,35 @@ public class VaultServiceImpl implements VaultService {
     @Override
     public Optional<Category> findById(UUID id) {
         return vault.getCategories().stream().filter(c -> c.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public void addPassword(Password password) {
+        if (password == null) throw new IllegalArgumentException("password cannot be null");
+        vault.addPassword(password);
+        persist();
+    }
+
+    @Override
+    public void deletePassword(UUID id) {
+        vault.removePassword(id);
+        persist();
+    }
+
+    @Override
+    public List<Password> getPasswordsByCategory(UUID categoryId) {
+        return vault.getPasswordsByCategory(categoryId);
+    }
+
+    @Override
+    public Optional<Password> findPasswordById(UUID id) {
+        if (id == null) return Optional.empty();
+        return vault.getPasswords().stream().filter(p -> p.getId().equals(id)).findFirst();
+    }
+
+    @Override
+    public void updatePassword(Password updated) {
+        boolean ok = vault.updatePassword(updated);
+        if (ok) persist();
     }
 }

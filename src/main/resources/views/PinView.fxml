@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1" stylesheets="@/css/style.css"
+           fx:controller="com.passmate.controllers.PinController">
+    <VBox spacing="12" alignment="CENTER">
+        <padding>
+            <Insets top="40" right="24" bottom="24" left="24"/>
+        </padding>
+        <Text text="PassMate" styleClass="text-title-xl" />
+        <ImageView fx:id="profileImage" fitWidth="84" fitHeight="84" pickOnBounds="true" preserveRatio="true"/>
+        <Label fx:id="usernameLabel" />
+        <Label fx:id="instructionLabel" />
+        <PasswordField fx:id="pinField" promptText="Enter PIN" maxWidth="260" />
+        <PasswordField fx:id="confirmField" promptText="Confirm PIN" maxWidth="260" visible="false" managed="false" />
+        <HBox spacing="8">
+            <Button text="Clear" onAction="#onClear" />
+            <Button text="Enter" onAction="#onSubmit" styleClass="btn btn-primary" />
+        </HBox>
+        <Label fx:id="errorLabel" styleClass="text-subtle" />
+    </VBox>
+</StackPane>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml/1" alignment="CENTER" spacing="8" fx:id="root" styleClass="toast">
+    <Label fx:id="message" styleClass="toast-text" />
+</HBox>
+

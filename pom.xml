@@ -15,6 +15,7 @@
         <javafx.plugin.version>0.0.8</javafx.plugin.version> <!-- Added plugin version -->
         <junit.jupiter.version>5.10.2</junit.jupiter.version>
         <maven.surefire.version>3.2.5</maven.surefire.version>
+        <jna.version>5.14.0</jna.version> <!-- Added JNA version -->
     </properties>
 
     <dependencies>
@@ -41,12 +42,35 @@
             <artifactId>ikonli-fontawesome5-pack</artifactId> <!-- Changed artifactId -->
             <version>${ikonli.version}</version>
         </dependency>
+        <!-- New icon packs -->
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-feather-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fluentui-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
 
         <!-- JSON processing -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.17.1</version>
+        </dependency>
+
+        <!-- Windows native auth via JNA -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>${jna.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna-platform</artifactId>
+            <version>${jna.version}</version>
         </dependency>
 
         <!-- Testing -->
@@ -92,6 +116,7 @@
                 <version>${javafx.plugin.version}</version> <!-- Updated version -->
                 <configuration>
                     <mainClass>com.passmate.App</mainClass>
+                    <jvmArgs>--enable-native-access=javafx.graphics</jvmArgs> <!-- Added jvmArgs -->
                 </configuration>
             </plugin>
 
