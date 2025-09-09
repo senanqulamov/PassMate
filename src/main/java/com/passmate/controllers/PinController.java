@@ -69,7 +69,8 @@ public class PinController {
     @FXML
     private void onDigit(javafx.event.ActionEvent e) {
         Object src = e.getSource();
-        if (src instanceof javafx.scene.control.Button b) {
+        if (src instanceof javafx.scene.control.Button) {
+            javafx.scene.control.Button b = (javafx.scene.control.Button) src;
             PasswordField target = targetFieldForAppend();
             target.appendText(b.getText());
         }

@@ -1,75 +1,72 @@
 package com.passmate.models;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-/**
- * Represents the user's local vault containing categories and password entries.
- */
 public class Vault {
-    private final List<Category> categories = new ArrayList<>();
-    private final List<Password> passwords = new ArrayList<>();
+    private final StringProperty name;
+    private final StringProperty owner;
+    private final ObservableList<Password> passwords;
+    private final ObservableList<Category> categories;
 
-    /**
-     * An unmodifiable snapshot of categories.
-     */
-    public List<Category> getCategories() {
-        return Collections.unmodifiableList(categories);
+    public Vault() {
+        this.name = new SimpleStringProperty("");
+        this.owner = new SimpleStringProperty("");
+        this.passwords = FXCollections.observableArrayList();
+        this.categories = FXCollections.observableArrayList();
     }
 
-    /**
-     * Add a category to the vault.
-     * @param category non-null category
-     */
+    public Vault(String name, String owner) {
+        this();
+        this.name.set(name);
+        this.owner.set(owner);
+    }
+
+    // Name property
+    public StringProperty nameProperty() { return name; }
+    public String getName() { return name.get(); }
+    public void setName(String name) { this.name.set(name); }
+
+    // Owner property
+    public StringProperty ownerProperty() { return owner; }
+    public String getOwner() { return owner.get(); }
+    public void setOwner(String owner) { this.owner.set(owner); }
+
+    // Passwords list
+    public ObservableList<Password> getPasswords() { return passwords; }
+
+    // Categories list
+    public ObservableList<Category> getCategories() { return categories; }
+
+    // Methods for existing code compatibility
     public void addCategory(Category category) {
-        if (category == null) throw new IllegalArgumentException("category cannot be null");
         categories.add(category);
     }
 
-    /**
-     * Remove a category by id.
-     * @param id category id
-     * @return true if removed
-     */
-    public boolean removeCategory(UUID id) {
-        // Also remove passwords belonging to this category
-        passwords.removeIf(p -> p.getCategoryId().equals(id));
-        return categories.removeIf(c -> c.getId().equals(id));
-    }
-
-    public List<Password> getPasswords() {
-        return Collections.unmodifiableList(passwords);
-    }
-
-    public List<Password> getPasswordsByCategory(UUID categoryId) {
-        return passwords.stream().filter(p -> p.getCategoryId().equals(categoryId)).collect(Collectors.toList());
+    public void removeCategory(String categoryId) {
+        categories.removeIf(cat -> categoryId.equals(cat.getId()));
     }
 
     public void addPassword(Password password) {
-        if (password == null) throw new IllegalArgumentException("password cannot be null");
         passwords.add(password);
     }
 
-    public boolean removePassword(UUID id) {
-        return passwords.removeIf(p -> p.getId().equals(id));
+    public void removePassword(String passwordId) {
+        passwords.removeIf(pass -> passwordId.equals(pass.getId()));
     }
 
-    public boolean updatePassword(Password updated) {
-        if (updated == null) return false;
+    public void updatePassword(Password password) {
         for (int i = 0; i < passwords.size(); i++) {
-            Password p = passwords.get(i);
-            if (p.getId().equals(updated.getId())) {
-                // Update fields in-place
-                p.setTitle(updated.getTitle());
-                p.setUsername(updated.getUsername());
-                p.setPasswordHash(updated.getPasswordHash());
-                p.setCategoryId(updated.getCategoryId());
-                return true;
+            if (passwords.get(i).getId().equals(password.getId())) {
+                passwords.set(i, password);
+                break;
             }
         }
-        return false;
+    }
+
+    public ObservableList<Password> getPasswordsByCategory(String categoryId) {
+        return passwords.filtered(pass -> categoryId.equals(pass.getCategoryId()));
     }
 }

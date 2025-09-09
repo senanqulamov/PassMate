@@ -1,71 +1,72 @@
 package com.passmate.services;
 
+import com.passmate.models.Vault;
 import com.passmate.models.Category;
 import com.passmate.models.Password;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import javafx.collections.ObservableList;
 
 /**
- * Business logic for managing the Vault's categories and password groups.
+ * Service interface for vault management operations.
+ * Handles vault creation, category management, and password organization.
  */
 public interface VaultService {
-    // Category operations
-    /**
-     * @return all categories ordered by name ascending.
-     */
-    List<Category> getCategories();
 
     /**
-     * Create and add a category.
-     * @param name non-blank name
-     * @return created Category
-     * @throws IllegalArgumentException if name blank
-     * @throws com.passmate.services.exceptions.DuplicateCategoryException if name already exists (case-insensitive)
+     * Creates a new vault for the given user.
+     * @param vaultName The name of the vault
+     * @param ownerName The owner of the vault
+     * @return The created vault
      */
-    Category createCategory(String name);
+    Vault createVault(String vaultName, String ownerName);
 
     /**
-     * Rename a category.
-     * @param id category id
-     * @param newName non-blank new name
-     * @return updated Category
-     * @throws com.passmate.services.exceptions.CategoryNotFoundException if id doesn't exist
-     * @throws com.passmate.services.exceptions.DuplicateCategoryException if name already exists (case-insensitive)
-     * @throws IllegalArgumentException if newName blank
+     * Loads an existing vault from storage.
+     * @param vaultPath The path to the vault file
+     * @return The loaded vault or null if not found
      */
-    Category renameCategory(UUID id, String newName);
+    Vault loadVault(String vaultPath);
 
     /**
-     * Delete a category by id.
-     * @param id category id
-     * @throws com.passmate.services.exceptions.CategoryNotFoundException if id doesn't exist
+     * Saves the vault to storage.
+     * @param vault The vault to save
+     * @param vaultPath The path where to save the vault
+     * @return true if save was successful, false otherwise
      */
-    void deleteCategory(UUID id);
+    boolean saveVault(Vault vault, String vaultPath);
 
     /**
-     * @param name name to check
-     * @return true if a category exists with the given name (case-insensitive)
+     * Adds a new category to the vault.
+     * @param vault The target vault
+     * @param category The category to add
      */
-    boolean existsByNameIgnoreCase(String name);
+    void addCategory(Vault vault, Category category);
 
     /**
-     * @param id category id
-     * @return category if present
+     * Removes a category from the vault.
+     * @param vault The target vault
+     * @param categoryId The ID of the category to remove
      */
-    Optional<Category> findById(UUID id);
+    void removeCategory(Vault vault, String categoryId);
 
-    // Password operations
-    /** Add password to vault and persist. */
-    void addPassword(Password password);
-    /** Delete password by id and persist. */
-    void deletePassword(UUID id);
-    /** List passwords for a category. */
-    List<Password> getPasswordsByCategory(UUID categoryId);
+    /**
+     * Updates an existing category in the vault.
+     * @param vault The target vault
+     * @param category The updated category
+     */
+    void updateCategory(Vault vault, Category category);
 
-    /** Find a password by id. */
-    Optional<Password> findPasswordById(UUID id);
-    /** Update a password entry and persist. */
-    void updatePassword(Password updated);
+    /**
+     * Gets all categories in the vault.
+     * @param vault The target vault
+     * @return Observable list of categories
+     */
+    ObservableList<Category> getCategories(Vault vault);
+
+    /**
+     * Gets all passwords in a specific category.
+     * @param vault The target vault
+     * @param categoryId The category ID
+     * @return Observable list of passwords in the category
+     */
+    ObservableList<Password> getPasswordsByCategory(Vault vault, String categoryId);
 }

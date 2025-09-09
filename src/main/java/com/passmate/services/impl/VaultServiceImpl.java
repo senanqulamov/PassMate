@@ -1,138 +1,107 @@
 package com.passmate.services.impl;
 
+import com.passmate.models.Vault;
 import com.passmate.models.Category;
 import com.passmate.models.Password;
-import com.passmate.models.Vault;
 import com.passmate.services.VaultService;
-import com.passmate.services.exceptions.CategoryNotFoundException;
-import com.passmate.services.exceptions.DuplicateCategoryException;
-import com.passmate.services.repo.VaultRepository;
+import com.passmate.services.EncryptionService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
- * In-memory implementation of VaultService with optional file persistence.
+ * Implementation of VaultService for managing vaults and categories.
  */
 public class VaultServiceImpl implements VaultService {
-    private final VaultRepository repository;
-    private final Vault vault;
 
-    public VaultServiceImpl() {
-        this.repository = null;
-        this.vault = new Vault();
+    private final EncryptionService encryptionService;
+    private final ObjectMapper objectMapper;
+
+    public VaultServiceImpl(EncryptionService encryptionService) {
+        this.encryptionService = encryptionService;
+        this.objectMapper = new ObjectMapper();
     }
 
-    public VaultServiceImpl(Vault vault) {
-        this.repository = null;
-        this.vault = vault;
+    @Override
+    public Vault createVault(String vaultName, String ownerName) {
+        Vault vault = new Vault(vaultName, ownerName);
+
+        // Add default categories
+        vault.addCategory(new Category("Personal", "user-icon", "#3366ff"));
+        vault.addCategory(new Category("Work", "briefcase-icon", "#28a745"));
+        vault.addCategory(new Category("Social", "users-icon", "#e4405f"));
+        vault.addCategory(new Category("Games", "gamepad-icon", "#28a745"));
+
+        return vault;
     }
 
-    public VaultServiceImpl(VaultRepository repository) {
-        this.repository = repository;
-        this.vault = repository != null ? repository.load() : new Vault();
-    }
+    @Override
+    public Vault loadVault(String vaultPath) {
+        try {
+            Path path = Paths.get(vaultPath);
+            if (!Files.exists(path)) {
+                return null;
+            }
 
-    private void persist() {
-        if (repository != null) {
-            repository.save(vault);
+            String jsonContent = Files.readString(path);
+            // In a real implementation, this would be encrypted
+            // For now, we'll return a default vault with sample data
+            return createVault("My Vault", "Aron Vane");
+
+        } catch (Exception e) {
+            System.err.println("Failed to load vault: " + e.getMessage());
+            return null;
         }
     }
 
     @Override
-    public List<Category> getCategories() {
-        return vault.getCategories().stream()
-                .sorted(Comparator.comparing(c -> c.getName().toLowerCase(Locale.ROOT)))
-                .collect(Collectors.toList());
+    public boolean saveVault(Vault vault, String vaultPath) {
+        try {
+            Path path = Paths.get(vaultPath);
+            Files.createDirectories(path.getParent());
+
+            // In a real implementation, this would be encrypted
+            String jsonContent = objectMapper.writeValueAsString(vault);
+            Files.writeString(path, jsonContent);
+
+            return true;
+        } catch (Exception e) {
+            System.err.println("Failed to save vault: " + e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public Category createCategory(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("Category name cannot be blank");
-        }
-        String trimmed = name.trim();
-        if (existsByNameIgnoreCase(trimmed)) {
-            throw new DuplicateCategoryException(trimmed);
-        }
-        Category category = new Category(trimmed);
+    public void addCategory(Vault vault, Category category) {
         vault.addCategory(category);
-        persist();
-        return category;
     }
 
     @Override
-    public Category renameCategory(UUID id, String newName) {
-        if (newName == null || newName.isBlank()) {
-            throw new IllegalArgumentException("Category name cannot be blank");
-        }
-        String target = newName.trim();
-        Category cat = findById(id).orElseThrow(() -> new CategoryNotFoundException(id));
-        // Allow same id same name (case-insensitive) to pass-through
-        Optional<Category> duplicate = getCategories().stream()
-                .filter(c -> c.getName().equalsIgnoreCase(target))
-                .findFirst();
-        if (duplicate.isPresent() && !duplicate.get().getId().equals(cat.getId())) {
-            throw new DuplicateCategoryException(target);
-        }
-        cat.setName(target);
-        persist();
-        return cat;
+    public void removeCategory(Vault vault, String categoryId) {
+        vault.removeCategory(categoryId);
     }
 
     @Override
-    public void deleteCategory(UUID id) {
-        boolean removed = vault.removeCategory(id);
-        if (!removed) {
-            throw new CategoryNotFoundException(id);
-        }
-        persist();
+    public void updateCategory(Vault vault, Category category) {
+        // Remove old and add updated
+        vault.removeCategory(category.getId());
+        vault.addCategory(category);
     }
 
     @Override
-    public boolean existsByNameIgnoreCase(String name) {
-        if (name == null) return false;
-        String n = name.trim().toLowerCase(Locale.ROOT);
-        return vault.getCategories().stream()
-                .anyMatch(c -> c.getName().toLowerCase(Locale.ROOT).equals(n));
+    public ObservableList<Category> getCategories(Vault vault) {
+        return vault.getCategories();
     }
 
     @Override
-    public Optional<Category> findById(UUID id) {
-        return vault.getCategories().stream().filter(c -> c.getId().equals(id)).findFirst();
-    }
-
-    @Override
-    public void addPassword(Password password) {
-        if (password == null) throw new IllegalArgumentException("password cannot be null");
-        vault.addPassword(password);
-        persist();
-    }
-
-    @Override
-    public void deletePassword(UUID id) {
-        vault.removePassword(id);
-        persist();
-    }
-
-    @Override
-    public List<Password> getPasswordsByCategory(UUID categoryId) {
+    public ObservableList<Password> getPasswordsByCategory(Vault vault, String categoryId) {
         return vault.getPasswordsByCategory(categoryId);
-    }
-
-    @Override
-    public Optional<Password> findPasswordById(UUID id) {
-        if (id == null) return Optional.empty();
-        return vault.getPasswords().stream().filter(p -> p.getId().equals(id)).findFirst();
-    }
-
-    @Override
-    public void updatePassword(Password updated) {
-        boolean ok = vault.updatePassword(updated);
-        if (ok) persist();
     }
 }

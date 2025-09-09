@@ -1,28 +1,123 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.passmate.controllers.MainController"
-            stylesheets="@/css/style.css"
-            prefWidth="1000" prefHeight="680">
-    <HBox spacing="12" styleClass="main-root">
-        <padding>
-            <Insets top="12" right="12" bottom="12" left="12"/>
-        </padding>
+<HBox xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.passmate.controllers.MainController">
 
-        <!-- Left Sidebar -->
-        <fx:include fx:id="sidebar" source="/views/components/Sidebar.fxml" />
+   <!-- Left Sidebar -->
+   <VBox styleClass="main-sidebar" prefWidth="250" minWidth="250">
+      <VBox fx:id="sidebarContainer" />
+   </VBox>
 
-        <!-- Middle List -->
-        <fx:include fx:id="passwordList" source="/views/components/PasswordList.fxml" />
+   <!-- Password List -->
+   <VBox styleClass="password-list-section" prefWidth="350" minWidth="350">
+      <HBox styleClass="section-header" alignment="CENTER_LEFT" spacing="15" prefHeight="50">
+         <padding>
+            <Insets left="20" right="20" />
+         </padding>
+         <Label fx:id="sectionTitleLabel" text="All passwords" styleClass="section-title" />
+         <Region HBox.hgrow="ALWAYS" />
+         <Button text="+ Create new" onAction="#handleCreateNew" styleClass="create-button" />
+      </HBox>
 
-        <!-- Right Detail / Editor (stacked) -->
-        <StackPane fx:id="rightStack" HBox.hgrow="ALWAYS">
-            <fx:include fx:id="passwordDetail" source="/views/components/PasswordDetail.fxml" />
-            <fx:include fx:id="passwordEditor" source="/views/components/PasswordEditor.fxml" />
-        </StackPane>
-    </HBox>
-</StackPane>
+      <!-- Search Bar moved here -->
+      <HBox styleClass="search-container-list" alignment="CENTER_LEFT" spacing="10">
+         <padding>
+            <Insets top="10" left="20" right="20" bottom="10" />
+         </padding>
+         <Pane styleClass="search-icon" prefWidth="16" prefHeight="16" />
+         <TextField fx:id="searchField" promptText="Search your vault..." styleClass="search-field" HBox.hgrow="ALWAYS" />
+      </HBox>
+
+      <ScrollPane styleClass="password-scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
+         <VBox fx:id="passwordListContainer" spacing="2" />
+      </ScrollPane>
+   </VBox>
+
+   <!-- Password Detail View -->
+   <VBox fx:id="detailContainer" styleClass="detail-view" HBox.hgrow="ALWAYS">
+      <HBox styleClass="detail-header" alignment="CENTER_LEFT" spacing="15" prefHeight="50">
+         <padding>
+            <Insets left="20" right="20" />
+         </padding>
+         <Label fx:id="selectedPasswordName" text="⭐ Adobe Cloud" styleClass="detail-title" />
+         <Region HBox.hgrow="ALWAYS" />
+         <MenuButton text="Add to folder" styleClass="folder-button">
+            <items>
+               <MenuItem text="Personal" onAction="#handleMoveToPersonal" />
+               <MenuItem text="Work" onAction="#handleMoveToWork" />
+               <MenuItem text="Games" onAction="#handleMoveToGames" />
+            </items>
+         </MenuButton>
+      </HBox>
+
+      <ScrollPane styleClass="detail-scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
+         <VBox spacing="20">
+            <padding>
+               <Insets top="20" left="20" right="20" bottom="20" />
+            </padding>
+
+            <!-- Name Field -->
+            <VBox spacing="8">
+               <Label text="Name" styleClass="field-label" />
+               <TextField fx:id="detailNameField" text="Adobe Cloud" styleClass="detail-field" editable="false" />
+            </VBox>
+
+            <!-- Username Field -->
+            <VBox spacing="8">
+               <Label text="Username" styleClass="field-label" />
+               <HBox spacing="10" alignment="CENTER_LEFT">
+                  <TextField fx:id="detailUsernameField" text="Aron Vane" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="copyUsernameBtn" onAction="#handleCopyUsername" styleClass="copy-btn" text="Copy" />
+               </HBox>
+            </VBox>
+
+            <!-- Password Field -->
+            <VBox spacing="8">
+               <Label text="Password" styleClass="field-label" />
+               <HBox spacing="10" alignment="CENTER_LEFT">
+                  <TextField fx:id="detailPasswordDisplay" text="••••••••••" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
+                  <Button fx:id="togglePasswordBtn" onAction="#handleTogglePassword" styleClass="toggle-password-btn" text="👁" />
+                  <Button onAction="#handleGeneratePassword" styleClass="generate-password-btn" text="🔄" />
+                  <Button fx:id="copyPasswordBtn" onAction="#handleCopyPassword" styleClass="copy-btn" text="Copy" />
+               </HBox>
+            </VBox>
+
+            <!-- Website Field -->
+            <VBox spacing="8">
+               <Label text="Website" styleClass="field-label" />
+               <HBox spacing="10" alignment="CENTER_LEFT">
+                  <TextField fx:id="detailWebsiteField" text="www.creativecloud.adobe.com" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
+                  <Button styleClass="link-icon-btn" text="🔗" />
+                  <Button fx:id="goToPageBtn" onAction="#handleGoToPage" styleClass="goto-btn" text="Go to page" />
+               </HBox>
+            </VBox>
+
+            <!-- Notes Field -->
+            <VBox spacing="8">
+               <Label text="Notes" styleClass="field-label" />
+               <TextArea fx:id="detailNotesField" styleClass="detail-field" editable="false" prefRowCount="3" />
+            </VBox>
+
+            <!-- Metadata -->
+            <VBox spacing="10">
+               <HBox spacing="20">
+                  <Label fx:id="createdByLabel" text="Created by Aron Vane" styleClass="metadata-text" />
+                  <Label fx:id="createdDateLabel" text="Created 14.12.2021" styleClass="metadata-text" />
+               </HBox>
+               <Label fx:id="lastUpdatedLabel" text="Last update 13.12.2023" styleClass="metadata-text" />
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+               <Button fx:id="editBtn" onAction="#handleEdit" text="✏ Edit" styleClass="action-btn edit-btn" />
+               <Button fx:id="duplicateBtn" onAction="#handleDuplicate" text="⧉ Duplicate" styleClass="action-btn duplicate-btn" />
+               <Button fx:id="deleteBtn" onAction="#handleDelete" text="🗑 Delete" styleClass="action-btn delete-btn" />
+            </HBox>
+         </VBox>
+      </ScrollPane>
+   </VBox>
+
+</HBox>

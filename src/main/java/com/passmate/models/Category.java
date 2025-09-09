@@ -1,64 +1,44 @@
 package com.passmate.models;
 
-import java.util.Objects;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import java.util.UUID;
 
-/**
- * Represents a logical folder/category that groups passwords.
- */
 public class Category {
-    private final UUID id;
-    private String name;
+    private final String id;
+    private final StringProperty name;
+    private final StringProperty iconName;
+    private final StringProperty color;
 
-    /**
-     * Create a Category with a generated id.
-     * @param name human-friendly name. Must be non-blank.
-     */
-    public Category(String name) {
-        this(UUID.randomUUID(), name);
+    public Category() {
+        this.id = UUID.randomUUID().toString();
+        this.name = new SimpleStringProperty("");
+        this.iconName = new SimpleStringProperty("");
+        this.color = new SimpleStringProperty("#666666");
     }
 
-    /**
-     * Create a Category with provided id and name.
-     * @param id unique identifier
-     * @param name human-friendly name. Must be non-blank.
-     */
-    public Category(UUID id, String name) {
-        if (id == null) throw new IllegalArgumentException("id cannot be null");
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("name cannot be null/blank");
-        this.id = id;
-        this.name = name.trim();
+    public Category(String name, String iconName, String color) {
+        this.id = UUID.randomUUID().toString();
+        this.name = new SimpleStringProperty(name);
+        this.iconName = new SimpleStringProperty(iconName);
+        this.color = new SimpleStringProperty(color);
     }
 
-    public UUID getId() {
-        return id;
-    }
+    // ID getter
+    public String getId() { return id; }
 
-    public String getName() {
-        return name;
-    }
+    // Name property
+    public StringProperty nameProperty() { return name; }
+    public String getName() { return name.get(); }
+    public void setName(String name) { this.name.set(name); }
 
-    public void setName(String name) {
-        if (name == null || name.isBlank()) throw new IllegalArgumentException("name cannot be null/blank");
-        this.name = name.trim();
-    }
+    // Icon name property
+    public StringProperty iconNameProperty() { return iconName; }
+    public String getIconName() { return iconName.get(); }
+    public void setIconName(String iconName) { this.iconName.set(iconName); }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Category category = (Category) o;
-        return id.equals(category.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return name;
-    }
+    // Color property
+    public StringProperty colorProperty() { return color; }
+    public String getColor() { return color.get(); }
+    public void setColor(String color) { this.color.set(color); }
 }
-
