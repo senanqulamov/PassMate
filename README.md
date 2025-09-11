@@ -40,17 +40,17 @@
 
 ## 🎯 Roadmap
 
-| **Phase** | **Feature**                      | **Status**       |
-|-----------|----------------------------------|------------------|
-| **P0**    | Project setup (Maven, JavaFX)    | ✅ Completed      |
-| **P1**    | Vault + Category structure       | ✅ Completed     |
+| **Phase** | **Feature**                      | **Status**     |
+|-----------|----------------------------------|----------------|
+| **P0**    | Project setup (Maven, JavaFX)    | ✅ Completed    |
+| **P1**    | Vault + Category structure       | ✅ Completed    |
 | **P2**    | Password model + AES encryption  | ✅ Completed    |
-| **P3**    | Microsoft-style JavaFX UI        | ✅ Completed       |
-| **P4**    | CRUD operations for passwords    | ✅ Completed       |
-| **P5**    | Clipboard copy / view features   | 🔄 In Progress       |
-| **P6**    | Autofill & "Apply" functionality | ⏳ Upcoming       |
-| **P7**    | Token / QR sharing logic         | ⏳ Upcoming       |
-| **P8**    | Custom domain decoder API        | 🔮 Future         |
+| **P3**    | Microsoft-style JavaFX UI        | ✅ Completed    |
+| **P4**    | CRUD operations for passwords    | ✅ Completed    |
+| **P5**    | Clipboard copy / view features   | ✅ Completed    |
+| **P6**    | Autofill & "Apply" functionality | 🔄 In Progress |
+| **P7**    | Token / QR sharing logic         | ⏳ Upcoming     |
+| **P8**    | Custom domain decoder API        | 🔮 Future      |
 
 <div align="center">
    <img src="https://user-images.githubusercontent.com/74038190/212284158-e840e285-664b-44d7-b79b-e264b5e54825.gif" alt="Roadmap GIF" width="100%" height="auto">

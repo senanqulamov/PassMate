@@ -14,10 +14,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.shape.Circle;
@@ -54,18 +51,21 @@ public class MainController implements Initializable {
     @FXML private Button duplicateBtn;
     @FXML private Button deleteBtn;
     @FXML private Button togglePasswordBtn;
+    @FXML private MenuButton folderMenuButton; // dynamic folder assignment menu
 
     // Services and data
     private final PasswordService passwordService;
     private final VaultService vaultService;
     private FilteredList<Password> filteredPasswords;
     private Password selectedPassword;
-    private Vault currentVault;
+    @SuppressWarnings("FieldCanBeLocal") private Vault currentVault;
     private VBox selectedPasswordCard;
     private VBox selectedCategoryItem;
     private String currentCategory = "all";
     private boolean isPasswordVisible = false;
     private boolean isEditMode = false;
+
+    private static final String[] DEFAULT_CATEGORY_IDS = {"personal","work","games"};
 
     public MainController() {
         this.passwordService = PasswordService.getInstance();
@@ -95,21 +95,7 @@ public class MainController implements Initializable {
      */
     private void initializeVault() {
         currentVault = vaultService.createVault("My Vault", "Aron Vane");
-
-        // Assign passwords to categories
-        var passwords = passwordService.getAllPasswords();
-        if (!passwords.isEmpty() && passwords.size() >= 9) {
-            passwords.get(0).setCategoryId("personal"); // Adobe Cloud
-            passwords.get(1).setCategoryId("work");     // Airtable
-            passwords.get(2).setCategoryId("work");     // Webflow
-            passwords.get(3).setCategoryId("work");     // Framer
-            passwords.get(4).setCategoryId("personal"); // Amazon
-            passwords.get(5).setCategoryId("work");     // Google
-            passwords.get(6).setCategoryId("personal"); // Apple ID
-            passwords.get(7).setCategoryId("work");     // Superhuman
-            passwords.get(8).setCategoryId("games");    // Instagram
-        }
-
+        // Removed sample password category assignments – user starts with empty data.
         filteredPasswords = new FilteredList<>(passwordService.getAllPasswords());
     }
 
@@ -118,54 +104,39 @@ public class MainController implements Initializable {
         sidebar.getStyleClass().add("sidebar");
         sidebar.setPadding(new Insets(20));
 
-        // All passwords section
+        // Always provide an "All passwords" entry
         VBox allPasswordsSection = createSidebarItem("All passwords", "folder-icon", "all", currentCategory.equals("all"));
+        sidebar.getChildren().add(allPasswordsSection);
 
-        // Favourites section
-        VBox favouritesSection = createSidebarItem("Favourites", "star-icon", "favourites", false);
-
-        // Bin section
-        VBox binSection = createSidebarItem("Bin", "bin-icon", "bin", false);
-
-        // By type section
-        Label byTypeLabel = new Label("By type");
-        byTypeLabel.getStyleClass().add("sidebar-section-header");
-
-        VBox websiteLoginSection = createSidebarItem("Website login", "globe-icon", "login", false);
-        VBox cardsSection = createSidebarItem("Cards", "card-icon", "cards", false);
-        VBox identitySection = createSidebarItem("Identity", "user-icon", "identity", false);
-        VBox lockedNotesSection = createSidebarItem("Locked notes", "note-icon", "notes", false);
-
-        // Folders section with category management
-        HBox foldersHeader = new HBox(5);
+        // Folders (user-created categories)
+        HBox foldersHeader = new HBox(10); // Adjust spacing between elements
         foldersHeader.setAlignment(Pos.CENTER_LEFT);
+
         Label foldersLabel = new Label("Folders");
         foldersLabel.getStyleClass().add("sidebar-section-header");
+
+        // Add a spacer region that will push the button to the right
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
         Button addFolderBtn = new Button("+");
         addFolderBtn.getStyleClass().add("add-folder-btn");
         addFolderBtn.setOnAction(e -> showAddCategoryModal());
-        foldersHeader.getChildren().addAll(foldersLabel, addFolderBtn);
 
-        VBox personalFolder = createCategoryItem("Personal", "folder-personal-icon", "personal", currentCategory.equals("personal"));
-        VBox workFolder = createCategoryItem("Work", "folder-work-icon", "work", currentCategory.equals("work"));
-        VBox gamesFolder = createCategoryItem("Games", "folder-games-icon", "games", currentCategory.equals("games"));
+        // For better vertical alignment if needed
+        addFolderBtn.setAlignment(Pos.CENTER);
 
-        sidebar.getChildren().addAll(
-            allPasswordsSection,
-            favouritesSection,
-            binSection,
-            new Separator(),
-            byTypeLabel,
-            websiteLoginSection,
-            cardsSection,
-            identitySection,
-            lockedNotesSection,
-            new Separator(),
-            foldersHeader,
-            personalFolder,
-            workFolder,
-            gamesFolder
-        );
+        // Add all components to the HBox
+        foldersHeader.getChildren().addAll(foldersLabel, spacer, addFolderBtn);
+        sidebar.getChildren().add(new Separator());
+        sidebar.getChildren().add(foldersHeader);
+
+        // Dynamically render categories (no defaults)
+        for (Category c : passwordService.getAllCategories()) {
+            boolean selected = currentCategory.equals(c.getId());
+            VBox catItem = createCategoryItem(c.getName(), c.getIconName(), c.getId(), selected);
+            sidebar.getChildren().add(catItem);
+        }
 
         sidebarContainer.getChildren().clear();
         sidebarContainer.getChildren().add(sidebar);
@@ -238,13 +209,13 @@ public class MainController implements Initializable {
             // Apply search filter
             String searchText = searchField.getText();
             boolean matchesSearch = searchText == null || searchText.trim().isEmpty() ||
-                password.getName().toLowerCase().contains(searchText.toLowerCase()) ||
-                password.getUsername().toLowerCase().contains(searchText.toLowerCase()) ||
-                password.getWebsite().toLowerCase().contains(searchText.toLowerCase());
+                    password.getName().toLowerCase().contains(searchText.toLowerCase()) ||
+                    password.getUsername().toLowerCase().contains(searchText.toLowerCase()) ||
+                    password.getWebsite().toLowerCase().contains(searchText.toLowerCase());
 
             // Apply category filter
             boolean matchesCategory = currentCategory.equals("all") ||
-                (password.getCategoryId() != null && password.getCategoryId().equals(currentCategory));
+                    (password.getCategoryId() != null && password.getCategoryId().equals(currentCategory));
 
             return matchesSearch && matchesCategory;
         });
@@ -412,6 +383,8 @@ public class MainController implements Initializable {
         if (isEditMode) {
             resetEditMode();
         }
+        refreshFolderMenu();
+        updateFolderMenuButtonLabel();
     }
 
     /**
@@ -681,12 +654,7 @@ public class MainController implements Initializable {
         dialog.setHeaderText("Enter password details");
 
         // Custom CSS for dialog
-        try {
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            dialog.getDialogPane().getStyleClass().add("custom-dialog");
-        } catch (Exception e) {
-            // CSS loading failed, continue without styling
-        }
+        styleDialog(dialog);
 
         // GridPane for input fields
         GridPane grid = new GridPane();
@@ -746,12 +714,12 @@ public class MainController implements Initializable {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == createButtonType && !serviceNameField.getText().trim().isEmpty()) {
                 return new Password(
-                    serviceNameField.getText().trim(),
-                    usernameField.getText().trim(),
-                    passwordField.getText(),
-                    websiteField.getText().trim(),
-                    notesField.getText().trim(),
-                    currentCategory.equals("all") ? "personal" : currentCategory
+                        serviceNameField.getText().trim(),
+                        usernameField.getText().trim(),
+                        passwordField.getText(),
+                        websiteField.getText().trim(),
+                        notesField.getText().trim(),
+                        currentCategory.equals("all") ? null : currentCategory
                 );
             }
             return null;
@@ -790,12 +758,7 @@ public class MainController implements Initializable {
         dialog.getDialogPane().setContent(content);
 
         // Custom CSS for dialog
-        try {
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            dialog.getDialogPane().getStyleClass().add("custom-dialog");
-        } catch (Exception e) {
-            // CSS loading failed, continue without styling
-        }
+        styleDialog(dialog);
 
         // Buttons
         ButtonType deleteButtonType = new ButtonType("Delete Password", ButtonBar.ButtonData.OK_DONE);
@@ -837,12 +800,7 @@ public class MainController implements Initializable {
         dialog.getDialogPane().setContent(content);
 
         // Custom CSS for dialog
-        try {
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            dialog.getDialogPane().getStyleClass().add("custom-dialog");
-        } catch (Exception e) {
-            // CSS loading failed, continue without styling
-        }
+        styleDialog(dialog);
 
         // Buttons
         ButtonType createButtonType = new ButtonType("Create Category", ButtonBar.ButtonData.OK_DONE);
@@ -868,6 +826,7 @@ public class MainController implements Initializable {
                     passwordService.createCategory(newCategory);
                     showToast("Category '" + name + "' created successfully", ToastUtil.Type.SUCCESS);
                     setupSidebar();
+                    refreshFolderMenu();
                 } catch (Exception e) {
                     showToast("Failed to create category", ToastUtil.Type.ERROR);
                 }
@@ -893,12 +852,7 @@ public class MainController implements Initializable {
         dialog.getDialogPane().setContent(content);
 
         // Custom CSS for dialog
-        try {
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            dialog.getDialogPane().getStyleClass().add("custom-dialog");
-        } catch (Exception e) {
-            // CSS loading failed, continue without styling
-        }
+        styleDialog(dialog);
 
         // Buttons
         ButtonType renameButtonType = new ButtonType("Rename", ButtonBar.ButtonData.OK_DONE);
@@ -921,6 +875,7 @@ public class MainController implements Initializable {
                     passwordService.renameCategory(categoryId, newName);
                     showToast("Category renamed to '" + newName + "'", ToastUtil.Type.SUCCESS);
                     setupSidebar();
+                    refreshFolderMenu();
                 } catch (Exception e) {
                     showToast("Failed to rename category", ToastUtil.Type.ERROR);
                 }
@@ -940,7 +895,7 @@ public class MainController implements Initializable {
         Label nameLabel = new Label("Category: " + displayName);
         nameLabel.getStyleClass().add("delete-item-name");
 
-        Label infoLabel = new Label("Passwords in this category will be moved to 'Personal'");
+        Label infoLabel = new Label("Passwords in this category will have their category cleared");
         infoLabel.getStyleClass().add("info-text");
 
         Label warningLabel = new Label("⚠️ This action cannot be undone!");
@@ -950,12 +905,7 @@ public class MainController implements Initializable {
         dialog.getDialogPane().setContent(content);
 
         // Custom CSS for dialog
-        try {
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
-            dialog.getDialogPane().getStyleClass().add("custom-dialog");
-        } catch (Exception e) {
-            // CSS loading failed, continue without styling
-        }
+        styleDialog(dialog);
 
         // Buttons
         ButtonType deleteButtonType = new ButtonType("Delete Category", ButtonBar.ButtonData.OK_DONE);
@@ -974,6 +924,7 @@ public class MainController implements Initializable {
                     setupSidebar();
                     updatePasswordFilter();
                     setupPasswordList();
+                    refreshFolderMenu();
                 } catch (Exception e) {
                     showToast("Failed to delete category", ToastUtil.Type.ERROR);
                 }
@@ -1014,5 +965,58 @@ public class MainController implements Initializable {
         }
 
         return password.toString();
+    }
+
+    /** Helper to apply stylesheet safely to dialogs */
+    private void styleDialog(Dialog<?> dialog) {
+        try {
+            var url = getClass().getResource("/css/style.css");
+            if (url != null) {
+                dialog.getDialogPane().getStylesheets().add(url.toExternalForm());
+                dialog.getDialogPane().getStyleClass().add("custom-dialog");
+            }
+        } catch (Exception ignored) { }
+    }
+
+    private void refreshFolderMenu() {
+        if (folderMenuButton == null) return;
+        folderMenuButton.getItems().clear();
+        if (selectedPassword == null) return;
+        java.util.List<Category> all = passwordService.getAllCategories();
+        java.util.List<Category> defaults = new java.util.ArrayList<>();
+        java.util.List<Category> customs = new java.util.ArrayList<>();
+        java.util.Set<String> defaultSet = new java.util.HashSet<>(java.util.Arrays.asList(DEFAULT_CATEGORY_IDS));
+        for (Category c : all) { if (defaultSet.contains(c.getId())) defaults.add(c); else customs.add(c); }
+        defaults.sort(java.util.Comparator.comparing(Category::getName));
+        customs.sort(java.util.Comparator.comparing(Category::getName));
+        if (!defaults.isEmpty()) {
+            MenuItem header = new MenuItem("— Default folders —"); header.setDisable(true); folderMenuButton.getItems().add(header);
+            for (Category c: defaults){ MenuItem mi = new MenuItem(c.getName()); mi.setOnAction(ev->assignPasswordToCategory(c.getId())); folderMenuButton.getItems().add(mi);} }
+        if (!customs.isEmpty()) { if (!defaults.isEmpty()) folderMenuButton.getItems().add(new SeparatorMenuItem()); MenuItem header2 = new MenuItem("— Custom folders —"); header2.setDisable(true); folderMenuButton.getItems().add(header2); for (Category c: customs){ MenuItem mi = new MenuItem(c.getName()); mi.setOnAction(ev->assignPasswordToCategory(c.getId())); folderMenuButton.getItems().add(mi);} }
+        if (folderMenuButton.getItems().isEmpty()) { MenuItem none = new MenuItem("No folders yet"); none.setDisable(true); folderMenuButton.getItems().add(none); }
+        updateFolderMenuButtonLabel();
+    }
+
+    private void updateFolderMenuButtonLabel() {
+        if (folderMenuButton == null) return;
+        String catId = selectedPassword != null ? selectedPassword.getCategoryId() : null;
+        if (catId == null || catId.isBlank()) { folderMenuButton.setText("Add to folder"); return; }
+        for (Category c : passwordService.getAllCategories()) { if (c.getId().equals(catId)) { folderMenuButton.setText(c.getName()); return; } }
+        folderMenuButton.setText("Add to folder");
+    }
+
+    private void assignPasswordToCategory(String categoryId) {
+        if (selectedPassword == null) return;
+        selectedPassword.setCategoryId(categoryId);
+        try {
+            passwordService.updatePassword(selectedPassword, null);
+            updatePasswordFilter();
+            setupPasswordList();
+            showToast("Moved to folder", ToastUtil.Type.SUCCESS);
+            refreshFolderMenu();
+            updateFolderMenuButtonLabel();
+        } catch (CryptoException e) {
+            showToast("Failed to move password", ToastUtil.Type.ERROR);
+        }
     }
 }

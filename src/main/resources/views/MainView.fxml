@@ -22,12 +22,11 @@
          <Button text="+ Create new" onAction="#handleCreateNew" styleClass="create-button" />
       </HBox>
 
-      <!-- Search Bar moved here -->
+      <!-- Search Bar -->
       <HBox styleClass="search-container-list" alignment="CENTER_LEFT" spacing="10">
          <padding>
             <Insets top="10" left="20" right="20" bottom="10" />
          </padding>
-         <Pane styleClass="search-icon" prefWidth="16" prefHeight="16" />
          <TextField fx:id="searchField" promptText="Search your vault..." styleClass="search-field" HBox.hgrow="ALWAYS" />
       </HBox>
 
@@ -42,15 +41,8 @@
          <padding>
             <Insets left="20" right="20" />
          </padding>
-         <Label fx:id="selectedPasswordName" text="⭐ Adobe Cloud" styleClass="detail-title" />
+         <Label fx:id="selectedPasswordName" text="⭐" styleClass="detail-title" />
          <Region HBox.hgrow="ALWAYS" />
-         <MenuButton text="Add to folder" styleClass="folder-button">
-            <items>
-               <MenuItem text="Personal" onAction="#handleMoveToPersonal" />
-               <MenuItem text="Work" onAction="#handleMoveToWork" />
-               <MenuItem text="Games" onAction="#handleMoveToGames" />
-            </items>
-         </MenuButton>
       </HBox>
 
       <ScrollPane styleClass="detail-scroll-pane" fitToWidth="true" VBox.vgrow="ALWAYS">
@@ -62,14 +54,14 @@
             <!-- Name Field -->
             <VBox spacing="8">
                <Label text="Name" styleClass="field-label" />
-               <TextField fx:id="detailNameField" text="Adobe Cloud" styleClass="detail-field" editable="false" />
+               <TextField fx:id="detailNameField" styleClass="detail-field" editable="false" />
             </VBox>
 
             <!-- Username Field -->
             <VBox spacing="8">
                <Label text="Username" styleClass="field-label" />
                <HBox spacing="10" alignment="CENTER_LEFT">
-                  <TextField fx:id="detailUsernameField" text="Aron Vane" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
+                  <TextField fx:id="detailUsernameField" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
                   <Button fx:id="copyUsernameBtn" onAction="#handleCopyUsername" styleClass="copy-btn" text="Copy" />
                </HBox>
             </VBox>
@@ -89,10 +81,16 @@
             <VBox spacing="8">
                <Label text="Website" styleClass="field-label" />
                <HBox spacing="10" alignment="CENTER_LEFT">
-                  <TextField fx:id="detailWebsiteField" text="www.creativecloud.adobe.com" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
-                  <Button styleClass="link-icon-btn" text="🔗" />
-                  <Button fx:id="goToPageBtn" onAction="#handleGoToPage" styleClass="goto-btn" text="Go to page" />
+                  <TextField fx:id="detailWebsiteField" styleClass="detail-field" editable="false" HBox.hgrow="ALWAYS" />
+                  <Button styleClass="link-icon-btn" text="🔗" onAction="#handleGoToPage" />
+                  <Button fx:id="goToPageBtn" onAction="#handleGoToPage" styleClass="goto-btn" text="Go" />
                </HBox>
+            </VBox>
+
+            <!-- Folder Selector (moved here) -->
+            <VBox spacing="8">
+               <Label text="Folder" styleClass="field-label" />
+               <MenuButton fx:id="folderMenuButton" text="Add to folder" styleClass="folder-button" />
             </VBox>
 
             <!-- Notes Field -->
@@ -104,10 +102,10 @@
             <!-- Metadata -->
             <VBox spacing="10">
                <HBox spacing="20">
-                  <Label fx:id="createdByLabel" text="Created by Aron Vane" styleClass="metadata-text" />
-                  <Label fx:id="createdDateLabel" text="Created 14.12.2021" styleClass="metadata-text" />
+                  <Label fx:id="createdByLabel" text="" styleClass="metadata-text" />
+                  <Label fx:id="createdDateLabel" text="" styleClass="metadata-text" />
                </HBox>
-               <Label fx:id="lastUpdatedLabel" text="Last update 13.12.2023" styleClass="metadata-text" />
+               <Label fx:id="lastUpdatedLabel" text="" styleClass="metadata-text" />
             </VBox>
 
             <!-- Action Buttons -->

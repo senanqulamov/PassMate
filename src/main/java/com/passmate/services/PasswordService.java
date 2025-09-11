@@ -66,25 +66,17 @@ public class PasswordService {
             // Load passwords
             List<Password> loadedPasswords = storageService.loadPasswords();
             passwords.clear();
-            if (loadedPasswords != null && !loadedPasswords.isEmpty()) {
+            if (loadedPasswords != null) {
                 passwords.addAll(loadedPasswords);
-            } else {
-                // Load sample data if no passwords exist
-                loadSampleDataIfNeeded();
-                saveAllData(); // Save sample data to storage
             }
-
-            // Load categories
             List<Category> loadedCategories = storageService.loadCategories();
             categories.clear();
-            categories.addAll(loadedCategories);
-
+            if (loadedCategories != null) {
+                categories.addAll(loadedCategories);
+            }
             System.out.println("Loaded " + passwords.size() + " passwords and " + categories.size() + " categories from encrypted storage");
-
         } catch (CryptoException e) {
             System.err.println("Failed to load data from encrypted storage: " + e.getMessage());
-            // Fall back to sample data
-            loadSampleDataIfNeeded();
         }
     }
 
