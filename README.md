@@ -7,7 +7,7 @@
 ---
 
 <div align="center">
-   <img src="src/main/resources/icons/PassMate.png" alt="PassMate" width="50%" height="auto">
+   <img src="src/main/resources/icons/PassMate.png" alt="PassMate_v2" width="50%" height="auto">
 </div>
 
 ---
